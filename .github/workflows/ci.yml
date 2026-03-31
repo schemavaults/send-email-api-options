@@ -84,5 +84,16 @@ jobs:
       - name: Build package
         run: bun run build
 
+      - name: Configure .npmrc file
+        run: |
+          if [ ! -f ./.npmrc.github ]; then
+            echo "Error: Expected .npmrc.github file to exist in the project root!"
+            exit 1
+          fi
+          cp ./.npmrc.github ./.npmrc
+
       - name: Publish to GitHub Packages
         run: bun publish --registry https://npm.pkg.github.com
+        env:
+          SCHEMAVAULTS_GITHUB_PACKAGE_REGISTRY_USER: ${{ github.actor }}
+          SCHEMAVAULTS_GITHUB_PACKAGE_REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
