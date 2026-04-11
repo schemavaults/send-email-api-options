@@ -1,5 +1,8 @@
 export {
   sendEmailRequestBodySchema,
   sendEmailRequestBodySchema as default,
+  createSendEmailRequestBodySchema,
 } from "./send-email-request-body-schema";
 export type { SendEmailRequestBody } from "./send-email-request-body-schema";
+
+export { emailTemplateIdSchema } from "./email-template-id-schema";
