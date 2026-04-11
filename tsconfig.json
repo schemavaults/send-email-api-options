@@ -19,7 +19,7 @@
       "@/*": ["./src/*"],
     },
     "baseUrl": ".",
-    "rootDir": ".",
+    "rootDir": "./src",
     "composite": false,
   },
   "include": ["src"],

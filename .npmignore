@@ -26,3 +26,5 @@ eslint.config.js
 eslint.config.mjs
 
 send-email-api-options.tgz
+
+.npmrc.github
