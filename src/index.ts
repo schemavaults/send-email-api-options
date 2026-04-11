@@ -6,3 +6,5 @@ export {
 export type { SendEmailRequestBody } from "./send-email-request-body-schema";
 
 export { emailTemplateIdSchema } from "./email-template-id-schema";
+
+export { getSchemaVaultsMailApiKey, sendEmail } from "./send-email";
