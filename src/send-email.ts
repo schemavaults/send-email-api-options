@@ -9,7 +9,7 @@ import {
 import {
   type SendEmailRequestBody,
   createSendEmailRequestBodySchema,
-} from "@schemavaults/send-email-api-options";
+} from "./send-email-request-body-schema";
 
 const body_schema = createSendEmailRequestBodySchema(true);
 
