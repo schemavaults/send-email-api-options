@@ -1,12 +1,12 @@
 {
-  "name": "@schemavaults/send-email-api-options",
+  "name": "@schemavaults/send-email",
   "description": "Schema defining the shape of the request body to send an email via @schemavaults/mail-server",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "license": "UNLICENSED",
   "private": false,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/schemavaults/send-email-api-options.git"
+    "url": "git+https://github.com/schemavaults/send-email.git"
   },
   "type": "module",
   "main": "dist/index.js",
