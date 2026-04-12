@@ -10,4 +10,5 @@ dist-types
 .env.staging
 .env.production
 
+send-email.tgz
 send-email-api-options.tgz

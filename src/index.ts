@@ -13,3 +13,9 @@ export {
   getSchemaVaultsMailingListId,
   sendEmailToMailingList,
 } from "./send-email-to-mailing-list";
+
+export { listEmailTemplates } from "./list-email-templates";
+export type {
+  EmailTemplate,
+  IListEmailTemplatesOpts,
+} from "./list-email-templates";

@@ -1,32 +1,25 @@
-// send-email.ts
-
 import {
   getAppEnvironment,
   getHardcodedApiServerDomain,
   SCHEMAVAULTS_MAIL_APP_DEFINITION,
   type SchemaVaultsAppEnvironment,
 } from "@schemavaults/app-definitions";
-import {
-  type SendEmailRequestBody,
-  createSendEmailRequestBodySchema,
-} from "./send-email-request-body-schema";
 import getSchemaVaultsMailApiKey from "./get-api-key";
 
-const body_schema = createSendEmailRequestBodySchema(true);
+export interface EmailTemplate {
+  id: string;
+  description: string;
+}
 
-export interface ISendEmailOpts {
-  body: SendEmailRequestBody;
+export interface IListEmailTemplatesOpts {
   bearerToken?: string;
   mailServerUrl?: string;
   environment?: SchemaVaultsAppEnvironment;
 }
 
-export { getSchemaVaultsMailApiKey };
-
-export async function sendEmail({
-  body,
-  ...opts
-}: ISendEmailOpts): Promise<void> {
+export async function listEmailTemplates(
+  opts: IListEmailTemplatesOpts = {},
+): Promise<EmailTemplate[]> {
   let environment: SchemaVaultsAppEnvironment;
   if (opts.environment) {
     environment = opts.environment;
@@ -36,12 +29,6 @@ export async function sendEmail({
     } catch {
       environment = "production";
     }
-  }
-
-  const parsed = await body_schema.safeParseAsync(body);
-  if (!parsed.success) {
-    console.error("Bad request body: ", parsed.error);
-    throw new TypeError("Bad request body to send email with!");
   }
 
   let bearerToken: string;
@@ -55,17 +42,16 @@ export async function sendEmail({
     SCHEMAVAULTS_MAIL_APP_DEFINITION.app_id,
     environment,
   ).domain;
-  const endpoint: string = `${mail_server_url}/api/send`;
+  const endpoint: string = `${mail_server_url}/api/templates`;
   const response = await fetch(endpoint, {
-    method: "POST",
-    body: JSON.stringify(parsed.data satisfies SendEmailRequestBody),
+    method: "GET",
     headers: {
-      "Content-Type": "application/json",
       Authorization: `Bearer ${bearerToken}`,
     },
   });
+
   if (!response.ok || response.status !== 200) {
-    let errorMessage = "Error response while trying to send email!";
+    let errorMessage = "Error response while trying to list email templates!";
     try {
       const errBody = await response.json();
       if (
@@ -81,15 +67,19 @@ export async function sendEmail({
     }
     throw new Error(errorMessage);
   }
+
   const responseBody = await response.json();
   if (typeof responseBody !== "object" || !responseBody) {
-    throw new Error("Failed to parse JSON object from response object!");
+    throw new Error("Failed to parse JSON object from response!");
   }
   if (!("success" in responseBody) || !responseBody.success) {
     throw new Error("Failure indicated in response body!");
   }
+  if (!("data" in responseBody) || !Array.isArray(responseBody.data)) {
+    throw new Error("Missing 'data' array in response body!");
+  }
 
-  return;
+  return responseBody.data as EmailTemplate[];
 }
 
-export default sendEmail;
+export default listEmailTemplates;

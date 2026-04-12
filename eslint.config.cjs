@@ -1,4 +1,4 @@
-// @schemavaults/send-email-api-options - eslint.config.cjs
+// @schemavaults/send-email - eslint.config.cjs
 
 const js = require("@eslint/js");
 const tsParser = require("@typescript-eslint/parser");
