@@ -1,6 +1,6 @@
-import type { SchemaVaultsAppEnvironment } from "@schemavaults/app-definitions";
 import type { SendEmailRequestBody } from "./send-email-request-body-schema";
 import sendEmail, { type ISendEmailOpts } from "./send-email";
+import { z } from "zod";
 
 export function getSchemaVaultsMailingListId(): string {
   if (
@@ -19,15 +19,28 @@ export interface ISendEmailToMailingListOpts extends Omit<
   "body"
 > {
   body: Omit<SendEmailRequestBody, "to" | "cc" | "bcc">;
-  bearerToken?: string;
-  mailServerUrl?: string;
-  environment?: SchemaVaultsAppEnvironment;
+  mailingListId?: string;
+}
+
+function isUuid(val: unknown): val is string {
+  return typeof val === "string" && z.string().safeParse(val).success;
 }
 
 export async function sendEmailToMailingList(
-  opts: ISendEmailOpts,
+  opts: ISendEmailToMailingListOpts,
 ): Promise<void> {
-  const to: string = getSchemaVaultsMailingListId();
+  let to: string;
+  if (typeof opts.mailingListId === "string") {
+    to = opts.mailingListId;
+  } else {
+    to = getSchemaVaultsMailingListId();
+  }
+  if (!isUuid(to)) {
+    throw new TypeError(
+      "Failed to parse 'to' field as a mailing list ID (UUID)!",
+    );
+  }
+
   return await sendEmail({
     ...opts,
     body: {
