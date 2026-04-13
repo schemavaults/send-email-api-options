@@ -1,6 +1,6 @@
 ---
 name: send-email-to-mailing-list
-description: Send an email to a mailing list via the SchemaVaults mail-server `/api/send` route, using either the `sendEmailToMailingList()` helper or the `schemavaults-send-email send-to-mailing-list` CLI from `@schemavaults/send-email`. Use when any server-side TypeScript/JavaScript code needs to send a notification to a mailing list audience — **or when Claude Code itself wants to send a one-shot notification at the end of a task** (preferred: invoke the CLI via `bunx schemavaults-send-email send-to-mailing-list …`; fallback: write a short script to `/tmp/` and run it with `bun`).
+description: Send an email to a mailing list via the SchemaVaults mail-server `/api/send` route, using either the `sendEmailToMailingList()` helper or the `schemavaults-send-email send-to-mailing-list` CLI from `@schemavaults/send-email`. Use when any server-side TypeScript/JavaScript code needs to send a notification to a mailing list audience — **or when Claude Code itself wants to send a one-shot notification at the end of a task** (preferred — invoke the CLI via `bunx schemavaults-send-email send-to-mailing-list …`; fallback — write a short script to `/tmp/` and run it with `bun`).
 ---
 
 # Send Email to Mailing List
