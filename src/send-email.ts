@@ -58,11 +58,15 @@ export async function sendEmail({
   let mail_server_url: string;
   if (typeof opts.mailServerUrl === "string") {
     mail_server_url = opts.mailServerUrl;
-  } else {
+  } else if (typeof opts.mailServerUrl === "undefined") {
     mail_server_url = getHardcodedApiServerDomain(
       SCHEMAVAULTS_MAIL_APP_DEFINITION.app_id,
       environment,
     ).domain;
+  } else {
+    throw new TypeError(
+      "Expected 'mailServerUrl' to be a string or undefined!",
+    );
   }
   const endpoint: string = `${mail_server_url}/api/send`;
   const response = await fetch(endpoint, {
