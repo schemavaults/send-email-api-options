@@ -55,10 +55,15 @@ export async function sendEmail({
     bearerToken = getSchemaVaultsMailApiKey();
   }
 
-  const mail_server_url: string = getHardcodedApiServerDomain(
-    SCHEMAVAULTS_MAIL_APP_DEFINITION.app_id,
-    environment,
-  ).domain;
+  let mail_server_url: string;
+  if (typeof opts.mailServerUrl === "string") {
+    mail_server_url = opts.mailServerUrl;
+  } else {
+    mail_server_url = getHardcodedApiServerDomain(
+      SCHEMAVAULTS_MAIL_APP_DEFINITION.app_id,
+      environment,
+    ).domain;
+  }
   const endpoint: string = `${mail_server_url}/api/send`;
   const response = await fetch(endpoint, {
     method: "POST",
