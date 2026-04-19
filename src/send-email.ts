@@ -19,6 +19,7 @@ export interface ISendEmailOpts {
   bearerToken?: string;
   mailServerUrl?: string;
   environment?: SchemaVaultsAppEnvironment;
+  dryRun?: boolean;
 }
 
 export { getSchemaVaultsMailApiKey };
@@ -38,7 +39,10 @@ export async function sendEmail({
     }
   }
 
-  const parsed = await body_schema.safeParseAsync(body);
+  const effectiveBody: SendEmailRequestBody =
+    typeof opts.dryRun === "boolean" ? { ...body, dryRun: opts.dryRun } : body;
+
+  const parsed = await body_schema.safeParseAsync(effectiveBody);
   if (!parsed.success) {
     console.error("Bad request body: ", parsed.error);
     throw new TypeError("Bad request body to send email with!");

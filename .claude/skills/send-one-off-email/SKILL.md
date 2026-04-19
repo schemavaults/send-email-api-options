@@ -72,6 +72,20 @@ bunx schemavaults-send-email send --body-file /tmp/payload.json
 
 (Use `npx` instead of `bunx` if `bun` is unavailable.) The CLI exits `0` on a successful 200 response and non-zero with a one-line error otherwise. Run `bunx schemavaults-send-email send --help` for the full flag reference.
 
+### Validating without sending (`--dry-run`)
+
+Use `--dry-run` to validate a request end-to-end -- Zod body shape, `template_props` shape, API-key scoping -- without actually delivering an email. This is the right way to smoke-test a new send. **Never send a blank or placeholder "test" email for this purpose.**
+
+```bash
+bunx schemavaults-send-email send --dry-run \
+  --to alice@example.com \
+  --subject "Welcome aboard" \
+  --template-id welcome-email \
+  --template-props '{"name":"Alice"}'
+```
+
+A successful dry-run prints `[dry-run] request validated; no email sent.` and exits `0`. A malformed request (e.g. wrong `template_props` shape) exits non-zero with the server's validation error.
+
 ### Globally-applicable flags
 
 These work on every subcommand, before the subcommand name:
@@ -135,6 +149,7 @@ type OneOffEmailBody = {
   replyTo?: string;
   cc?: string | string[];          // 1-50
   bcc?: string | string[];         // 1-50
+  dryRun?: boolean;                // server validates without dispatching
 };
 
 // Helper call signature:
@@ -142,6 +157,7 @@ type ISendEmailOpts = {
   body: OneOffEmailBody;
   bearerToken?: string;            // override SCHEMAVAULTS_MAIL_API_KEY
   environment?: "production" | "development" | "staging";
+  dryRun?: boolean;                // convenience; sets body.dryRun
 };
 ```
 
@@ -161,6 +177,7 @@ The CLI prints the error message and exits non-zero. The helper throws on any no
 
 - **Treat recipient lists as PII.** Don't paste them into chat logs or commit them to source.
 - **Ask before sending** if the user hasn't explicitly opted in. Email is a side effect visible to other humans.
+- **Never send a blank or "test" email to validate a request.** Use `--dry-run` (CLI) or `dryRun: true` (helper body). The mail-server validates the full request -- including `template_props` shape -- without dispatching. Real test emails create inbox noise, can leak staging addresses, and annoy recipients.
 - **Prefer mailing lists** for any audience that grows or churns -- managing a recipient list inline doesn't scale.
 - **Don't loop the CLI/helper to fan out** beyond 50 recipients per send -- create a mailing list instead and use the `send-email-to-mailing-list` skill.
 

@@ -12,6 +12,7 @@ import type { SendEmailRequestBody } from "./send-email-request-body-schema";
 interface GlobalOpts {
   apiKey?: string;
   environment?: SchemaVaultsAppEnvironment;
+  dryRun?: boolean;
 }
 
 interface MessageOpts {
@@ -134,6 +135,10 @@ program
       "--environment <env>",
       "Target SchemaVaults environment",
     ).choices(["production", "development", "staging"]),
+  )
+  .option(
+    "--dry-run",
+    "Validate the request server-side without dispatching the email",
   );
 
 attachBodyOptions(
@@ -176,8 +181,13 @@ attachBodyOptions(
       body,
       ...(global.apiKey ? { bearerToken: global.apiKey } : {}),
       ...(global.environment ? { environment: global.environment } : {}),
+      ...(global.dryRun ? { dryRun: true } : {}),
     });
-    console.log("Email sent.");
+    console.log(
+      global.dryRun
+        ? "[dry-run] request validated; no email sent."
+        : "Email sent.",
+    );
   });
 });
 
@@ -219,8 +229,13 @@ attachBodyOptions(
       ...(opts.mailingListId ? { mailingListId: opts.mailingListId } : {}),
       ...(global.apiKey ? { bearerToken: global.apiKey } : {}),
       ...(global.environment ? { environment: global.environment } : {}),
+      ...(global.dryRun ? { dryRun: true } : {}),
     });
-    console.log("Email sent to mailing list.");
+    console.log(
+      global.dryRun
+        ? "[dry-run] mailing-list request validated; no email sent."
+        : "Email sent to mailing list.",
+    );
   });
 });
 

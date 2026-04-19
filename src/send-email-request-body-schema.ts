@@ -68,6 +68,7 @@ export function createSendEmailRequestBodySchema(
           z.string().email().array().min(1).max(MAX_RECIPIENTS),
         ])
         .optional(),
+      dryRun: z.boolean().optional(),
     })
     .required({
       to: true,
